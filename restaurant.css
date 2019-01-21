@@ -1,0 +1,37 @@
+#restaurantList {
+    height: 100%;
+    width: 350px;
+    padding: 0 20px;
+    color: brown;
+    font-family: 'Vast Shadow', cursive;
+    background-color: rgba(253, 244, 232, 0.822);
+    font-size: 26px;
+    float: left;
+    border-radius: 5px;
+    margin: 50px;
+}
+
+ol:hover {
+    background-color: rgb(197, 197, 197);
+    border-radius: 5px;
+}
+
+.order {
+    font-size: 26px;
+    float: left;
+    width: 220px;
+    background-color: rgba(165, 42, 42, 0.596);
+    margin: 0 20px;
+    font-family: 'Vast Shadow', cursive;
+    color: rgb(253, 244, 232);
+    align-content: center;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 50px;
+}
+
+.item {
+    font-size: 20px;
+    font-family: 'La Belle Aurore';
+    margin-left: 20px;
+}
