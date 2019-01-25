@@ -48,6 +48,7 @@ h2 {
     padding-top: 10px;
     width: 16px;
     height: 16px;
+
 }
 
 #ordersDiv ul {
@@ -55,4 +56,28 @@ h2 {
     font-size: 20px;
     font-family: 'La Belle Aurore';
     overflow: auto;
+}
+
+button:focus {
+    outline: 0px solid #fff;
+    outline-offset: -4px;
+}
+
+button {
+    display: inline-block;
+    border: none;
+    background: #ffffff00; 
+    cursor: pointer;
+    text-align: center;
+    float: right;
+    padding-top: 10px;
+    padding-right: 10px;
+}
+
+#restaurantList button {
+    padding-right: 40px;
+}
+
+input {
+    margin-left: 15px;
 }

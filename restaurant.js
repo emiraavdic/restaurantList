@@ -1,8 +1,3 @@
-/*list resturana, svaki restoran mora imati IDBCursor,
-id, name
-
-var orders */
-
 let restaurants = {
     101: "Njam Njam", 
     102: "Mozaik", 
@@ -12,21 +7,17 @@ let restaurants = {
     106: "Mama Mia", 
     107: "Sedra",
     108: "Merak", 
-    109: "Limenka"};
+    109: "Limenka",
+    110: "Nota Bene"};
 
-let orderList = {
-    101: [], 
-    102: [], 
-    103: [], 
-    104: [], 
-    105: [], 
-    106: [], 
-    107: [], 
-    108: [], 
-    109: []};
-
-
+let orderList = {};
 let listDoc = document.getElementById('restaurantList');
+
+let parseInput = function (text){
+    if(text.trim().length == 0)
+        return 0;
+    return 1;
+}
 
 let removeListofOrders = function (listofOrders){
     while(listofOrders.childElementCount){
@@ -42,63 +33,56 @@ let addHTMLelement = function (tag, parent) {
 
 let refreshList = function (listofOrders, resID) {
     let arr = orderList[resID];
-    //if(arr.length == 0) return;
     removeListofOrders(listofOrders);
     for(let j = 0; j < arr.length; ++j){
         let order = addHTMLelement('li', listofOrders);
         order.appendChild(document.createTextNode(arr[j]));
-        
-        let cancelButton = addHTMLelement('img', order);
-        cancelButton.src = 'close.png';
-        cancelButton.classList.add('button');
+
+        let cancelButton = addHTMLelement('button', order);
+        cancelButton.innerHTML = '<img src="close.png">';
+        cancelButton.style.marginRight = '40px';
+
         cancelButton.addEventListener('click', function () { 
-            arr.splice(arr.indexOf(arr[j]), 1) ;
+            arr.splice(arr.indexOf(arr[j]), 1);
             refreshList(listofOrders, resID);
         } );
     }
 }
-/*
-let refreshList = function (listofOrders) {
-    for(let i = 0; i < restaurants.length; ++i){
-        let arr = orderList[i].order;
-        if(arr.length == 0) continue;
-        removeListofOrders(listofOrders);
-        for(let j = 0; j < arr.length; ++j){
-            let order = addHTMLelement('li', listofOrders);
-            order.appendChild(document.createTextNode(arr[j]));
-        }
-    }
-}*/
 
 let addRestaurant = function (id) { 
     let order = addHTMLelement('div', document.getElementById('ordersDiv'));
     order.classList.add('order');
     order.appendChild(document.createTextNode(restaurants[id]));
     
-    let cancelOrderButton = addHTMLelement('img', order);
-    cancelOrderButton.src = 'close.png';
-    cancelOrderButton.classList.add('button');
+    let cancelOrderButton = addHTMLelement('button', order);
+    cancelOrderButton.innerHTML = '<img src="close.png">';
+    
     cancelOrderButton.addEventListener('click', function () { 
         order.remove();
-        orderList[id] = [];
+        delete orderList[id];
+        document.getElementById(id + 'b').disabled = false;
+        refreshList(listofOrders, id);
      });
 
     let listofOrders = addHTMLelement('ul', order);
     listofOrders.classList.add('item')
     
-    let input = addHTMLelement('input', order);
-    input.type = 'text';
+    let inputOrder = addHTMLelement('input', order);
+    inputOrder.type = 'text';
     
-    let submit = addHTMLelement('img', order);
-    submit.src = 'addLight.png';
-    submit.classList.add('button');
+    let submitOrder = addHTMLelement('button', order);
+    submitOrder.innerHTML = '<img src="addLight.png">';
 
-    submit.addEventListener('click', function () { 
-        orderList[id].push(input.value);
-        input.value = '';
+    submitOrder.addEventListener('click', function () { 
+        if(parseInput(inputOrder.value)){
+            orderList[id].push(inputOrder.value);
+            let store = JSON.stringify(orderList);
+            window.localStorage.setItem('orderList', store);
+        }
+        inputOrder.value = '';
         refreshList(listofOrders, id);
     });
-
+    return listofOrders;
 }
 
 let makeRestaurantList = function () {
@@ -110,11 +94,28 @@ let makeRestaurantList = function () {
         restaurant.appendChild(document.createTextNode(restaurants[resID]));
     
         let button = addHTMLelement('button', restaurant);
-        button.style.background = 'addRed.png';
-        button.classList.add('button');
+        button.innerHTML = '<img src="addRed.png">';
 
-        button.addEventListener('click', function() { addRestaurant( resID )} );
+        button.addEventListener('click', function() { 
+            addRestaurant( resID );
+            orderList[resID] = [];
+            button.id = resID + 'b';
+            button.disabled = true;
+        } );
+    }
+}
+
+let loadStorage = function () {
+    let store = localStorage.getItem('orderList');
+    if(store){
+        orderList = JSON.parse(store);
+        console.log(orderList);
+        for(let el in orderList){
+            let list = addRestaurant(el);
+            refreshList(list, el);
+        }
     }
 }
 
 makeRestaurantList();
+loadStorage();
