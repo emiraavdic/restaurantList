@@ -41,6 +41,7 @@ h2 {
     padding: 10px 20px;
     margin-top: 50px;
     min-width: 240px;
+    word-break: break-all;
 }
 
 .button {
@@ -80,4 +81,18 @@ button {
 
 input {
     margin-left: 15px;
+}
+
+button img {
+    max-width: 12px;
+    max-height: 12px;
+}
+
+#dropButton {
+    font-family: 'Vast Shadow', cursive;
+    color: rgb(253, 244, 232);
+    background-color: rgba(165, 42, 42, 0.596);
+    padding: 10px;
+    font-size: 20px;
+    border-radius: 5px;
 }

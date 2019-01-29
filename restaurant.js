@@ -32,6 +32,9 @@ let addHTMLelement = function (tag, parent) {
 }
 
 let refreshList = function (listofOrders, resID) {
+    let store = JSON.stringify(orderList);
+    window.localStorage.setItem('orderList', store);
+    if(orderList[resID] == undefined) return;
     let arr = orderList[resID];
     removeListofOrders(listofOrders);
     for(let j = 0; j < arr.length; ++j){
@@ -76,13 +79,24 @@ let addRestaurant = function (id) {
     submitOrder.addEventListener('click', function () { 
         if(parseInput(inputOrder.value)){
             orderList[id].push(inputOrder.value);
-            let store = JSON.stringify(orderList);
-            window.localStorage.setItem('orderList', store);
         }
         inputOrder.value = '';
         refreshList(listofOrders, id);
     });
+
+    document.getElementById(id+'b').disabled = true;
     return listofOrders;
+}
+
+let loadStorage = function () {
+    let store = localStorage.getItem('orderList');
+    if(store){
+        orderList = JSON.parse(store);
+        for(let el in orderList){
+            let list = addRestaurant(el);
+            refreshList(list, el);
+        }
+    }
 }
 
 let makeRestaurantList = function () {
@@ -95,27 +109,26 @@ let makeRestaurantList = function () {
     
         let button = addHTMLelement('button', restaurant);
         button.innerHTML = '<img src="addRed.png">';
+        button.id = resID + 'b';
 
         button.addEventListener('click', function() { 
             addRestaurant( resID );
             orderList[resID] = [];
-            button.id = resID + 'b';
-            button.disabled = true;
-        } );
+            let store = JSON.stringify(orderList);
+            window.localStorage.setItem('orderList', store);
+        } );    
     }
-}
-
-let loadStorage = function () {
-    let store = localStorage.getItem('orderList');
-    if(store){
-        orderList = JSON.parse(store);
-        console.log(orderList);
+    let dropOrders =addHTMLelement('button', document.getElementById('cancelAllOrders'));
+    dropOrders.innerHTML = 'Drop All Orders';
+    dropOrders.id = 'dropButton';
+    dropOrders.addEventListener('click', function() { 
+        localStorage.clear();
+        document.getElementById('ordersDiv').innerHTML = '';
         for(let el in orderList){
-            let list = addRestaurant(el);
-            refreshList(list, el);
+            document.getElementById(el + 'b').disabled = false;
         }
-    }
+    });
+    loadStorage();
 }
 
 makeRestaurantList();
-loadStorage();
